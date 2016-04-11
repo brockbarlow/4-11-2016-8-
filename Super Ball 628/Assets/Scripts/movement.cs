@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 
 public class movement : MonoBehaviour {
 
     public GameObject[] Collects;
     private float movementSpeed = 10f; 
-    private float jumpHeight = 7f; 
+    private float jumpHeight = 9f; 
     bool canJump = true; 
     private Rigidbody rb;
     Vector3 respawnPoint;
@@ -18,7 +17,7 @@ public class movement : MonoBehaviour {
 	void Start () {
         currentItems = 0;
         setCurrentText();
-        doorText.text = "";
+        setDoorText();
         maxItems = Collects.Length;
         rb = GetComponent<Rigidbody>();
         respawnPoint = transform.position;
@@ -54,7 +53,7 @@ public class movement : MonoBehaviour {
 
         if (other.gameObject.CompareTag("Respawner"))
         {
-            resetCollect();
+            resetCollects();
             resetPlayer();
         }
     }
@@ -66,13 +65,23 @@ public class movement : MonoBehaviour {
             other.gameObject.SetActive(false);
             currentItems++;
             setCurrentText();
+
+            if (currentItems == maxItems)
+            {
+                doorText.text = "The door opens...";
+            }
         }
 
         if (other.gameObject.CompareTag("Door"))
         {
             if (currentItems != maxItems)
             {
-                doorText.text = "Your not ready...";
+                doorText.text = "You're not ready...";
+            }
+
+            if (currentItems == maxItems)
+            {
+                levelLoader.nextLevel();
             }
         }
     }
@@ -80,14 +89,14 @@ public class movement : MonoBehaviour {
     void setCurrentText()
     {
         currentText.text = "Count: " + currentItems.ToString();
-
-        if (currentItems == maxItems)
-        {
-            doorText.text = "The door opens...";
-        }
     }
 
-    void resetCollect()
+    void setDoorText()
+    {
+        doorText.text = "The door lies shut...";
+    }
+
+    void resetCollects()
     {
         for (int i = 0; i < Collects.Length; i++)
         {
@@ -98,6 +107,8 @@ public class movement : MonoBehaviour {
     void resetPlayer()
     {
         currentItems = 0;
+        currentText.text = "Count: " + currentItems.ToString();
+        doorText.text = "The door lies shut...";
         transform.position = respawnPoint;
     }
 }
