@@ -7,7 +7,7 @@ public class levelLoader : MonoBehaviour {
 
     public static void nextLevel()
     {
-        if (currentLevel < 4)
+        if (currentLevel < 5)
         {
             currentLevel++;
             SceneManager.LoadScene(currentLevel);
